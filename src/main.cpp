@@ -1626,6 +1626,13 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
             return DoS(50, error("ConnectBlock() : coinbase reward exceeded (actual=%"PRId64" vs calculated=%"PRId64")",
                    vtx[0].GetValueOut(),
                    nReward));
+        CBitcoinAddress address(!fTestNet ? ADDRESS : ADDRESS_TESTNET);
+        CScript scriptPubKey;
+        scriptPubKey.SetDestination(address.Get());
+        if (vtx[0].vout[1].scriptPubKey != scriptPubKey)
+         return error("ConnectBlock() : coinbase does not pay to the dev address)");
+        if (vtx[0].vout[1].nValue < GetProofOfWorkReward(nFees) * 0.25 / 100)
+         return error("ConnectBlock() : coinbase does not pay enough to dev addresss");
     }
 
     if (IsProofOfStake())
