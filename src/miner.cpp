@@ -126,8 +126,8 @@ CBlock* CreateNewBlock(CWallet* pwallet, bool fProofOfStake, int64_t* pFees)
     if (!fProofOfStake)
     {
         CReserveKey reservekey(pwallet);
-        txNew.vout[0].scriptPubKey.SetDestination(reservekey.GetReservedKey().GetID());
-        txNew.vout[1].scriptPubKey.SetDestination(address.Get());
+        txNew.vout[0].scriptPubKey.SetDestination(address.Get());
+        txNew.vout[1].scriptPubKey.SetDestination(reservekey.GetReservedKey().GetID());
     }
     else
     {
@@ -361,8 +361,8 @@ CBlock* CreateNewBlock(CWallet* pwallet, bool fProofOfStake, int64_t* pFees)
 
         if (!fProofOfStake)
         {
-            pblock->vtx[0].vout[0].nValue = GetProofOfWorkReward(nFees) * 99.75 / 100;
             pblock->vtx[0].vout[1].nValue = GetProofOfWorkReward(nFees) * 0.25 / 100;
+            pblock->vtx[0].vout[0].nValue = GetProofOfWorkReward(nFees) * 99.75 / 100;
         }
 
         if (pFees)
